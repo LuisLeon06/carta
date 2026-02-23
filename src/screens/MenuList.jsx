@@ -43,7 +43,7 @@ const MenuList = ({ category, items, onSelectProduct, onBack }) => {
                                 <p className="text-xs text-gray-400 line-clamp-2 mb-2 leading-relaxed">
                                     {item.description}
                                 </p>
-                                <div className="font-tech text-xl text-neon-cyan font-bold">
+                                <div className="font-tech text-xl text-neon-cyan font-bold price-pulse">
                                     ${item.price}
                                 </div>
                             </div>

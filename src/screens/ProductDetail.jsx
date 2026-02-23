@@ -79,10 +79,7 @@ const ProductDetail = ({ product, onBack }) => {
                     </model-viewer>
                 ) : (
                     <div className="w-full h-full p-8 flex items-center justify-center">
-                        <img src={product.image} alt={product.name} className="w-full max-w-sm rounded-[2rem] shadow-2xl glass-panel-heavy object-cover aspect-square" />
-                        <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 bg-black/60 px-4 py-2 rounded-full text-sm text-gray-300 backdrop-blur-md border border-white/10">
-                            Modelo 3D no disponible aún
-                        </div>
+                        <img src={product.image} alt={product.name} className="w-full max-w-sm rounded-[2rem] shadow-2xl glass-panel-heavy object-cover aspect-square img-flicker" />
                     </div>
                 )}
             </div>
@@ -120,18 +117,7 @@ const ProductDetail = ({ product, onBack }) => {
                     )}
                 </p>
 
-                <div className="relative mt-8">
-                    {/* Add a glowing behind the button */}
-                    <div className="absolute inset-0 bg-[var(--color-primary-cyan)] blur-[25px] opacity-30 rounded-xl pointer-events-none"></div>
-                    <button
-                        className="w-full bg-[var(--color-dark-bg)] text-neon-cyan box-neon-cyan-strong font-tech font-bold text-base py-4 rounded-xl flex items-center justify-center gap-3 hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,243,255,0.6)] transition-all disabled:opacity-50 disabled:hover:translate-y-0 relative z-10"
-                        onClick={handleToggleAR}
-                        disabled={!product.modelGlb}
-                    >
-                        <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                        {product.modelGlb ? 'PROBAR EN MI MESA (AR)' : 'SOLO IMAGEN'}
-                    </button>
-                </div>
+
             </div>
 
             {/* Modal QR Code */}

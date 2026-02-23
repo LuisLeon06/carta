@@ -182,4 +182,66 @@
   .fire-glow {
     box-shadow: 0 0 30px rgba(255, 77, 0, 0.3), inset 0 0 20px rgba(255, 77, 0, 0.2);
   }
+
+  /* Rotating light border for rectangular category cards */
+  .card-rotating-border {
+    position: relative;
+    border-radius: 2rem;
+    overflow: hidden;
+    padding: 2px;
+  }
+
+  .card-rotating-border::before {
+    content: '';
+    position: absolute;
+    inset: -100%;
+    background-image: conic-gradient(transparent,
+        rgba(255, 77, 0, 0.2),
+        rgba(255, 77, 0, 0.6) 10%,
+        var(--color-primary-fire) 18%,
+        rgba(255, 170, 0, 0.9) 28%,
+        transparent 45%);
+    animation: rotate-neon 4s linear infinite;
+  }
+
+  /* Flicker/pulse animation for product detail image */
+  @keyframes img-flicker {
+
+    0%,
+    100% {
+      filter: brightness(1) drop-shadow(0 0 6px rgba(255, 77, 0, 0.2));
+    }
+
+    50% {
+      filter: brightness(1.12) drop-shadow(0 0 22px rgba(255, 77, 0, 0.7));
+    }
+  }
+
+  .img-flicker {
+    animation: img-flicker 2.5s ease-in-out infinite;
+  }
+
+  /* Price pulsing animation */
+  @keyframes price-pulse {
+
+    0%,
+    100% {
+      opacity: 1;
+      text-shadow:
+        0 0 5px rgba(255, 77, 0, 0.7),
+        0 0 10px rgba(255, 77, 0, 0.9),
+        0 0 20px rgba(255, 77, 0, 0.5);
+    }
+
+    50% {
+      opacity: 0.6;
+      text-shadow:
+        0 0 2px rgba(255, 77, 0, 0.3),
+        0 0 5px rgba(255, 77, 0, 0.5);
+    }
+  }
+
+  .price-pulse {
+    animation: price-pulse 1.5s ease-in-out infinite;
+  }
 }
