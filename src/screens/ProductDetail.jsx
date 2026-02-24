@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 const ProductDetail = ({ product, onBack }) => {
-    const [showQRModal, setShowQRModal] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [showQRModal, setShowQRModal] = useState(false);
 
-    // Toast effect
+    // Toast duration effect
     useEffect(() => {
         if (toastMessage) {
             const timer = setTimeout(() => setToastMessage(''), 3000);
@@ -13,9 +13,6 @@ const ProductDetail = ({ product, onBack }) => {
     }, [toastMessage]);
 
     const handleToggleAR = () => {
-        console.log("Button clicked!");
-        setToastMessage("Iniciando experiencia AR...");
-
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         if (isMobile) {
@@ -23,7 +20,7 @@ const ProductDetail = ({ product, onBack }) => {
             if (mv && mv.canActivateAR) {
                 mv.activateAR();
             } else {
-                setToastMessage("AR no disponible. Mostrando código QR.");
+                setToastMessage("AR no disponible en este dispositivo.");
                 setShowQRModal(true);
             }
         } else {
@@ -35,48 +32,35 @@ const ProductDetail = ({ product, onBack }) => {
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}`;
 
     return (
-        <div className="h-screen w-full flex flex-col relative overflow-hidden bg-[var(--color-dark-bg)]">
-
-            {/* Top Navigation */}
-            <div className="absolute top-0 left-0 w-full p-4 z-40 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent">
+        <div className="fixed inset-0 z-50 flex flex-col bg-transparent md:max-w-lg md:mx-auto animate-in fade-in duration-300">
+            {/* Background Image/3D Viewer */}
+            <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-40">
                 <button
                     onClick={onBack}
-                    className="w-10 h-10 rounded-full glass-panel box-neon-cyan flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+                    className="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white shadow-lg hover:bg-white/10 box-neon-fire transition-all"
                 >
-                    <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg>
+                    <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg>
                 </button>
-                <div className="status-badge bg-[var(--color-primary-cyan)]/10 text-neon-cyan px-3 py-1 rounded-full box-neon-cyan flex items-center gap-2 text-xs font-bold tracking-widest">
-                    <span className="w-2 h-2 rounded-full bg-[var(--color-primary-cyan)] animate-pulse shadow-[0_0_15px_var(--color-primary-cyan)]"></span>
-                    DISPONIBLE
+                <div className="flex bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-green-500/50 items-center justify-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <span className="text-[10px] font-bold tracking-widest text-green-400 uppercase">DISPONIBLE</span>
                 </div>
             </div>
 
-            {/* 3D Viewer Area */}
-            <div className="flex-1 relative w-full flex justify-center items-center">
+            <div className="w-full h-[55vh] relative overflow-hidden bg-black/20">
                 {product.modelGlb ? (
-                    <model-viewer
-                        src={product.modelGlb}
-                        poster={product.image}
-                        alt={product.name}
-                        ar
-                        ar-modes="webxr scene-viewer quick-look"
-                        camera-controls
-                        auto-rotate
-                        shadow-intensity="1.5"
-                        exposure="1.2"
-                        environment-image="neutral"
-                        interaction-prompt="auto"
-                        loading="eager"
-                        className="w-full h-full"
-                        style={{ '--progress-bar-color': 'var(--color-primary-cyan)' }}
-                    >
-                        <div className="progress-bar hide" slot="progress-bar">
-                            <div className="update-bar"></div>
-                            <div className="text-[var(--color-primary-cyan)] font-tech text-xs mt-2 text-center uppercase tracking-widest animate-pulse">
-                                Cargando 3D...
-                            </div>
-                        </div>
-                    </model-viewer>
+                    <div className="w-full h-full">
+                        <model-viewer
+                            src={product.modelGlb}
+                            ar
+                            ar-modes="webxr scene-viewer quick-look"
+                            camera-controls
+                            poster={product.image}
+                            shadow-intensity="1"
+                            auto-rotate
+                            className="w-full h-full"
+                        ></model-viewer>
+                    </div>
                 ) : (
                     <div className="w-full h-full p-8 flex items-center justify-center">
                         <img src={product.image} alt={product.name} className="w-full max-w-sm rounded-[2rem] shadow-2xl glass-panel-heavy object-cover aspect-square img-flicker" />
@@ -84,64 +68,67 @@ const ProductDetail = ({ product, onBack }) => {
                 )}
             </div>
 
-            {/* Info Panel Bottom */}
-            <div className="glass-panel-heavy border-t border-[var(--glass-border)] rounded-t-[40px] p-6 relative z-30 shadow-[0_-20px_50px_rgba(0,0,0,0.5)] transform transition-transform">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full mt-3"></div>
+            {/* Info Panel */}
+            <div className="glass-panel-heavy border-t border-white/10 rounded-t-[40px] p-6 relative z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] transform transition-transform h-full">
+                <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-6"></div>
 
-                <div className="flex justify-between items-end mb-4 mt-2">
+                <div className="flex justify-between items-end mb-4">
                     <div>
-                        <h2 className="font-tech text-3xl m-0 uppercase leading-none text-neon-cyan">{product.name}</h2>
-                        <span className="text-neon-pink text-xs font-bold tracking-wider mt-1 block">{product.subtitle}</span>
+                        <h2 className="font-tech text-3xl m-0 uppercase leading-none text-neon-fire drop-shadow-sm">{product.name}</h2>
+                        <span className="text-orange-400 text-xs font-bold tracking-wider mt-1 block uppercase">{product.subtitle}</span>
                     </div>
                     <div className="text-right">
-                        <span className="font-tech text-3xl font-bold text-neon-cyan block leading-none">${product.price}</span>
-                        <span className="text-[10px] text-gray-400 uppercase tracking-widest">{product.currency}</span>
+                        <span className="font-tech text-3xl font-bold text-neon-fire block leading-none price-pulse">${product.price}</span>
+                        <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">{product.currency}</span>
                     </div>
                 </div>
 
-                <div className="flex gap-2 mb-4 overflow-x-auto hide-scrollbar">
-                    {product.tags.map((tag, i) => (
-                        <div key={i} className={`whitespace-nowrap text-xs px-3 py-1 rounded-md flex items-center gap-1 border ${tag.highlight
-                            ? 'border-[var(--color-primary-cyan)] text-[var(--color-primary-cyan)] bg-[var(--color-primary-cyan)]/5'
-                            : 'border-white/5 text-gray-300 bg-white/5'
-                            }`}>
-                            {tag.text}
-                        </div>
-                    ))}
+                <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                    <span className="bg-fire-red/20 border border-fire-red/30 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest flex items-center gap-1.5 whitespace-nowrap">
+                        <span className="w-1.5 h-1.5 rounded-full bg-fire-red"></span>
+                        Caliente
+                    </span>
+                    <span className="bg-orange-500/20 border border-orange-500/30 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest flex items-center gap-1.5 whitespace-nowrap">
+                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                        Recomendado
+                    </span>
                 </div>
 
-                <p className="text-sm leading-relaxed text-gray-400 mb-6 line-clamp-3">
+                <p className="text-gray-300 text-sm leading-relaxed mb-8 pr-4 font-medium drop-shadow-sm">
                     {product.description}
-                    {product.modelGlb && (
-                        <><br /><span className="text-[var(--color-primary-cyan)] text-[10px]">* Toca la pantalla para rotar 360°</span></>
-                    )}
                 </p>
 
+                {/* AR Button */}
+                {product.modelGlb && (
+                    <div className="mb-8">
+                        <button
+                            className="w-full h-14 rounded-2xl bg-black border-2 border-neon-fire flex items-center justify-center gap-3 text-neon-fire font-tech font-bold tracking-widest uppercase hover:bg-fire-red/10 active:scale-95 transition-all box-neon-fire shadow-[0_0_20px_rgba(255,170,0,0.3)] animate-pulse"
+                            onClick={() => {
+                                const mv = document.querySelector('model-viewer');
+                                if (mv) mv.activateAR();
+                            }}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 8V4h4M16 4h4v4M4 16v4h4M16 20h4v-4" /></svg>
+                            Ver en VR / Realidad Aumentada
+                        </button>
+                    </div>
+                )}
 
-            </div>
-
-            {/* Modal QR Code */}
-            <div className={`fixed inset-0 bg-black/85 backdrop-blur-md z-[1000] flex items-center justify-center transition-opacity duration-300 p-4 ${showQRModal ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-                <div className={`glass-panel p-8 rounded-3xl text-center max-w-sm w-full relative transform transition-transform duration-300 ${showQRModal ? 'scale-100' : 'scale-90'} shadow-[0_0_50px_rgba(0,243,255,0.15)]`}>
-                    <button
-                        className="absolute top-4 right-4 text-white hover:text-[var(--color-primary-cyan)] transition-colors text-2xl"
-                        onClick={() => setShowQRModal(false)}
-                    >&times;</button>
-                    <h3 className="font-tech text-[var(--color-primary-cyan)] text-xl mb-2 mt-0">Experiencia AR</h3>
-                    <p className="text-sm text-gray-300 mb-6">Escanea este código con tu celular para ver este modelo 3D en tu mesa.</p>
-                    <img src={qrUrl} alt="QR Code" className="w-48 h-48 mx-auto rounded-xl border-2 border-[var(--color-primary-cyan)] p-2 bg-white mb-4" />
-                    <p className="text-xs text-gray-500">Asegúrate de estar navegando desde el mismo Wi-Fi si es local.</p>
+                {/* Order Button Mockup */}
+                <div className="mt-auto">
+                    <button className="w-full h-16 rounded-2xl bg-gradient-to-r from-fire-red to-orange-600 text-white font-tech font-bold tracking-widest uppercase hover:brightness-110 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-2">
+                        Reservar Especialidad
+                    </button>
                 </div>
             </div>
 
             {/* Toast Notification */}
             <div
-                className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-[var(--color-primary-cyan)]/90 text-black px-6 py-3 rounded-full font-tech font-bold z-[2000] shadow-[0_0_20px_rgba(0,243,255,0.5)] transition-opacity duration-300 pointer-events-none"
+                className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-orange-600 text-white px-6 py-3 rounded-full font-tech font-bold z-[2000] shadow-lg transition-opacity duration-300 pointer-events-none"
                 style={{ opacity: toastMessage ? 1 : 0 }}
             >
                 {toastMessage}
             </div>
-
         </div>
     );
 };

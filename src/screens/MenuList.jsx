@@ -5,19 +5,19 @@ const MenuList = ({ category, items, onSelectProduct, onBack }) => {
     const filteredItems = items.filter(item => item.category === category.id);
 
     return (
-        <div className="min-h-screen w-full flex flex-col pt-8 pb-20 px-4 md:px-8 max-w-lg mx-auto bg-[var(--color-dark-bg)]">
+        <div className="min-h-screen w-full flex flex-col pt-8 pb-20 px-4 md:px-8 max-w-lg mx-auto bg-transparent">
 
             {/* Header */}
             <header className="mb-6 flex items-center gap-4">
                 <button
                     onClick={onBack}
-                    className="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white shrink-0 hover:bg-white/10 box-neon-cyan transition-colors"
+                    className="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white shrink-0 hover:bg-white/10 box-neon-fire transition-colors"
                 >
                     <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"></path></svg>
                 </button>
                 <div className="flex-1">
-                    <h2 className="text-xl font-bold tracking-wider font-tech text-neon-cyan uppercase drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">{category.name}</h2>
-                    <p className="text-xs text-[var(--color-primary-cyan)] uppercase tracking-widest font-bold">{filteredItems.length} opciones</p>
+                    <h2 className="text-xl font-bold tracking-wider font-tech text-neon-fire uppercase drop-shadow-sm">{category.name}</h2>
+                    <p className="text-xs text-[var(--color-primary-cyan)] uppercase tracking-widest font-bold font-tech">{filteredItems.length} opciones</p>
                 </div>
             </header>
 
@@ -29,7 +29,7 @@ const MenuList = ({ category, items, onSelectProduct, onBack }) => {
                     filteredItems.map((item) => (
                         <div
                             key={item.id}
-                            className="glass-panel rounded-2xl p-4 flex gap-4 items-center cursor-pointer hover:bg-white/5 transition-colors relative"
+                            className="glass-panel rounded-2xl p-4 flex gap-4 items-center cursor-pointer hover:bg-white/5 transition-colors relative shadow-2xl"
                             onClick={() => onSelectProduct(item)}
                         >
                             {/* Image Thumbnail */}
@@ -43,14 +43,14 @@ const MenuList = ({ category, items, onSelectProduct, onBack }) => {
                                 <p className="text-xs text-gray-400 line-clamp-2 mb-2 leading-relaxed">
                                     {item.description}
                                 </p>
-                                <div className="font-tech text-xl text-neon-cyan font-bold price-pulse">
+                                <div className="font-tech text-xl text-neon-fire font-bold price-pulse">
                                     ${item.price}
                                 </div>
                             </div>
 
                             {/* Action Button */}
                             <button
-                                className="w-10 h-10 rounded-full bg-[var(--color-dark-bg)] text-neon-cyan box-neon-cyan-strong flex items-center justify-center font-bold text-2xl hover:scale-110 transition-transform shrink-0"
+                                className="w-10 h-10 rounded-full bg-[var(--color-dark-bg)] text-neon-fire box-neon-fire flex items-center justify-center font-bold text-2xl hover:scale-110 transition-transform shrink-0"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onSelectProduct(item);
@@ -61,7 +61,7 @@ const MenuList = ({ category, items, onSelectProduct, onBack }) => {
 
                             {/* 3D Badge Indicator */}
                             {item.modelGlb && (
-                                <div className="absolute -top-2 -left-2 bg-[var(--color-dark-bg)] border border-[var(--color-accent-pink)] text-neon-pink text-[10px] px-2 py-0.5 rounded-full shadow-[0_0_15px_var(--color-accent-pink)] font-bold tracking-widest z-10">
+                                <div className="absolute -top-2 -left-2 bg-black border border-fire-red text-neon-fire text-[10px] px-2 py-0.5 rounded-full shadow-[0_0_15px_var(--color-fire-red)] font-bold tracking-widest z-10">
                                     3D / AR
                                 </div>
                             )}

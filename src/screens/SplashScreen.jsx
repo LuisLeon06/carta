@@ -69,20 +69,30 @@ const SplashScreen = ({ onStart }) => {
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex flex-col items-center justify-center min-h-[100px] gap-2">
-                    <div className={`transition-all duration-1000 transform ${showWelcome ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                        <p className="text-xl md:text-2xl font-tech text-neon-amber tracking-widest uppercase text-center px-4">
-                            !Disfrute su estancia!
-                        </p>
-                    </div>
+                {/* Welcome Message */}
+                <div className={`mt-8 transition-all duration-1000 transform ${showWelcome ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <h2 className="text-2xl font-tech text-neon-fire tracking-widest uppercase drop-shadow-[0_2px_10px_rgba(255,77,0,0.5)]">!Disfrute su estancia!</h2>
+                </div>
 
-                    <div className={`transition-all duration-1000 transform ${showSlogan ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                        <p className={`text-lg md:text-xl font-body text-neon-fire tracking-wide italic font-bold uppercase text-center px-4 ${showPulse ? 'opacity-100' : 'opacity-70'}`}>
-                            !Sabor que enciende!
-                        </p>
-                    </div>
+                {/* Slogan */}
+                <div className={`mt-4 transition-all duration-1000 delay-500 transform ${showSlogan ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                    <p className="text-xl font-body italic text-white font-bold tracking-wide uppercase drop-shadow-[0_2px_5px_rgba(0,0,0,0.8)]">!Sabor que enciende!</p>
                 </div>
             </div>
+
+            {/* Subtle Progress Indicator at bottom */}
+            <div className="absolute bottom-12 left-0 right-0 flex justify-center px-12">
+                <div className="w-full h-1 bg-black/5 rounded-full overflow-hidden border border-orange-200">
+                    <div className="h-full bg-orange-600 animate-[loading-bar_4s_linear_forwards] shadow-[0_0_10px_rgba(255,77,0,0.5)]"></div>
+                </div>
+            </div>
+
+            <style>{`
+                @keyframes loading-bar {
+                    0% { width: 0%; }
+                    100% { width: 100%; }
+                }
+            `}</style>
         </div>
     );
 };

@@ -228,18 +228,26 @@ const CategoryList = ({ categories, onSelectCategory }) => {
                 {categories.map((cat) => (
                     <div key={cat.id} className="card-rotating-border w-full">
                         <div
-                            className="w-full h-44 rounded-[1.9rem] cursor-pointer relative overflow-hidden glass-panel transform transition-all duration-300 hover:scale-[1.01] hover:bg-white/5 active:scale-95 group box-border"
+                            className="w-full h-44 rounded-[1.9rem] cursor-pointer relative overflow-hidden glass-panel transform transition-all duration-300 hover:scale-[1.01] hover:bg-white/5 active:scale-95 group box-border shadow-2xl"
                             onClick={() => onSelectCategory(cat)}
                         >
+                            {/* Background Image (right side) */}
                             <div className="absolute right-0 top-0 bottom-0 w-3/5 opacity-50 transition-opacity duration-300 group-hover:opacity-80">
-                                <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0a0f1e] to-transparent z-10"></div>
+                                {/* Gradient to blend image smoothly into the glass panel on the left */}
+                                <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black to-transparent z-10"></div>
                                 <img src={cat.image} alt={cat.name} className="w-full h-full object-cover origin-center" />
-                                <div className="absolute inset-0 bg-[var(--color-primary-cyan)] mix-blend-overlay z-10 opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                                <div className="absolute inset-0 bg-fire-red/20 mix-blend-overlay z-10 opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
                             </div>
+
+                            {/* Text Overlay */}
                             <div className="absolute inset-0 p-6 flex flex-col justify-center z-20 w-3/4">
-                                <h3 className="font-tech text-3xl font-bold mb-2 tracking-tight text-white group-hover:text-neon-cyan transition-colors drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{cat.name}</h3>
-                                <p className="text-sm text-gray-300 leading-snug line-clamp-2 pr-4 drop-shadow-md">{cat.subtitle}</p>
-                                <div className="mt-5 text-xs font-bold tracking-widest uppercase text-[var(--color-primary-cyan)] flex items-center gap-2 transform translate-x-0 group-hover:translate-x-2 transition-all duration-300">
+                                <h3 className="font-tech text-3xl font-bold mb-2 tracking-tight text-white group-hover:text-neon-fire transition-colors drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{cat.name}</h3>
+                                <p className="text-sm text-gray-300 leading-snug line-clamp-2 pr-4 drop-shadow-md">
+                                    {cat.subtitle}
+                                </p>
+
+                                {/* Button */}
+                                <div className="mt-5 text-xs font-bold tracking-widest uppercase text-neon-fire flex items-center gap-2 transform translate-x-0 group-hover:translate-x-2 transition-all duration-300">
                                     Explorar
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
                                 </div>

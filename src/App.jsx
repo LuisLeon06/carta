@@ -53,7 +53,7 @@ function App() {
   };
 
   return (
-    <div className="w-full h-full text-white bg-[var(--color-dark-bg)] selection:bg-[var(--color-primary-cyan)]/30">
+    <div className="w-full h-full text-white bg-transparent selection:bg-[var(--color-primary-cyan)]/30">
       {currentScreen === 'splash' && (
         <SplashScreen onStart={handleStart} />
       )}
