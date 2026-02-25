@@ -4,9 +4,9 @@ import CategoryList from './screens/CategoryList'
 import MenuList from './screens/MenuList'
 import ProductDetail from './screens/ProductDetail'
 import { fetchMenu } from './api/menuData'
+import EmberParticles from './components/EmberParticles'
 
 function App() {
-  // Screens: 'splash' -> 'categories' -> 'list' -> 'detail'
   const [currentScreen, setCurrentScreen] = useState('splash');
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -14,7 +14,21 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load menu data when app starts
+  // ── Cart state ─────────────────────────────────────
+  const [cart, setCart] = useState([]);
+  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  const handleAddToCart = (product) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === product.id);
+      if (existing) {
+        return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i);
+      }
+      return [...prev, { ...product, qty: 1 }];
+    });
+  };
+  // ───────────────────────────────────────────────────
+
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
@@ -26,40 +40,27 @@ function App() {
     loadData();
   }, []);
 
-  const handleStart = () => {
-    if (!isLoading) {
-      setCurrentScreen('categories');
-    }
-  };
-
-  const handleSelectCategory = (category) => {
-    setSelectedCategory(category);
-    setCurrentScreen('list');
-  };
-
-  const handleSelectProduct = (product) => {
-    setSelectedProduct(product);
-    setCurrentScreen('detail');
-  };
-
-  const handleBackToCategories = () => {
-    setSelectedCategory(null);
-    setCurrentScreen('categories');
-  };
-
-  const handleBackToList = () => {
-    setSelectedProduct(null);
-    setCurrentScreen('list');
-  };
+  const handleStart = () => { if (!isLoading) setCurrentScreen('categories'); };
+  const handleSelectCategory = (cat) => { setSelectedCategory(cat); setCurrentScreen('list'); };
+  const handleSelectProduct = (prod) => { setSelectedProduct(prod); setCurrentScreen('detail'); };
+  const handleBackToCategories = () => { setSelectedCategory(null); setCurrentScreen('categories'); };
+  const handleBackToList = () => { setSelectedProduct(null); setCurrentScreen('list'); };
 
   return (
     <div className="w-full h-full text-white bg-transparent selection:bg-[var(--color-primary-cyan)]/30">
+      {/* Ember/ash particles — global */}
+      <EmberParticles count={50} />
+
       {currentScreen === 'splash' && (
         <SplashScreen onStart={handleStart} />
       )}
 
       {currentScreen === 'categories' && (
-        <CategoryList categories={categories} onSelectCategory={handleSelectCategory} />
+        <CategoryList
+          categories={categories}
+          onSelectCategory={handleSelectCategory}
+          cartCount={cartCount}
+        />
       )}
 
       {currentScreen === 'list' && selectedCategory && (
@@ -68,11 +69,17 @@ function App() {
           items={menuItems}
           onSelectProduct={handleSelectProduct}
           onBack={handleBackToCategories}
+          cartCount={cartCount}
         />
       )}
 
       {currentScreen === 'detail' && selectedProduct && (
-        <ProductDetail product={selectedProduct} onBack={handleBackToList} />
+        <ProductDetail
+          product={selectedProduct}
+          onBack={handleBackToList}
+          onAddToCart={handleAddToCart}
+          cartCount={cartCount}
+        />
       )}
     </div>
   )

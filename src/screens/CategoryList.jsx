@@ -130,7 +130,7 @@ const changeLanguage = (langCode) => {
     window.location.reload();
 };
 
-const CategoryList = ({ categories, onSelectCategory }) => {
+const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
     const [showLangPanel, setShowLangPanel] = useState(false);
     const [activeLang, setActiveLang] = useState('es');
     const [search, setSearch] = useState('');
@@ -151,18 +151,49 @@ const CategoryList = ({ categories, onSelectCategory }) => {
     };
 
     return (
-        <div className="min-h-screen w-full flex flex-col pt-8 pb-12 px-4 md:px-8 max-w-lg mx-auto bg-[var(--color-dark-bg)] text-white">
+        <div className="min-h-screen w-full flex flex-col pt-8 pb-12 px-4 md:px-8 max-w-lg mx-auto text-white charred-container">
 
             {/* Header */}
             <header className="mb-8 flex justify-between items-center px-2">
                 <h2 className="text-4xl font-bold font-tech text-neon-cyan tracking-widest">MENÚ</h2>
-                <div
-                    className="w-10 h-10 rounded-full glass-panel box-neon-cyan flex flex-col justify-center items-center gap-1 cursor-pointer hover:shadow-[0_0_20px_rgba(255,77,0,0.6)] transition-shadow"
-                    onClick={() => { setShowLangPanel(v => !v); setSearch(''); }}
-                >
-                    <span className="w-4 h-0.5 bg-white rounded"></span>
-                    <span className="w-4 h-0.5 bg-white rounded"></span>
-                    <span className="w-4 h-0.5 bg-white rounded"></span>
+
+                {/* Right buttons */}
+                <div className="flex items-center gap-2">
+
+                    {/* Language button */}
+                    <div
+                        className="w-10 h-10 rounded-full glass-panel box-neon-cyan flex items-center justify-center cursor-pointer hover:shadow-[0_0_20px_rgba(255,77,0,0.6)] transition-shadow"
+                        onClick={() => { setShowLangPanel(v => !v); setSearch(''); }}
+                        title="Idioma"
+                    >
+                        {/* Globe icon */}
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                    </div>
+
+                    {/* Cart button */}
+                    <div className="relative">
+                        <div
+                            className="w-10 h-10 rounded-full glass-panel box-neon-cyan flex items-center justify-center cursor-pointer hover:shadow-[0_0_20px_rgba(255,77,0,0.6)] transition-shadow"
+                            title="Carrito"
+                        >
+                            {/* Cart icon */}
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                                <line x1="3" y1="6" x2="21" y2="6" />
+                                <path d="M16 10a4 4 0 0 1-8 0" />
+                            </svg>
+                        </div>
+                        {/* Badge */}
+                        {cartCount > 0 && (
+                            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-[var(--color-primary-fire)] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow-[0_0_8px_rgba(255,77,0,0.8)] border border-orange-300/30">
+                                {cartCount}
+                            </span>
+                        )}
+                    </div>
+
                 </div>
             </header>
 

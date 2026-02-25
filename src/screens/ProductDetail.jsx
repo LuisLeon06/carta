@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const ProductDetail = ({ product, onBack }) => {
+const ProductDetail = ({ product, onBack, onAddToCart, cartCount = 0 }) => {
     const [toastMessage, setToastMessage] = useState('');
     const [showQRModal, setShowQRModal] = useState(false);
 
@@ -114,10 +114,25 @@ const ProductDetail = ({ product, onBack }) => {
                     </div>
                 )}
 
-                {/* Order Button Mockup */}
+                {/* Add to Cart Button */}
                 <div className="mt-auto">
-                    <button className="w-full h-16 rounded-2xl bg-gradient-to-r from-fire-red to-orange-600 text-white font-tech font-bold tracking-widest uppercase hover:brightness-110 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-2">
-                        Reservar Especialidad
+                    <button
+                        onClick={() => {
+                            onAddToCart && onAddToCart(product);
+                            setToastMessage(`✅ ¡Agregado al carrito! (${cartCount + 1} ítem${cartCount + 1 !== 1 ? 's' : ''})`);
+                        }}
+                        className="w-full h-16 rounded-2xl bg-gradient-to-r from-fire-red to-orange-600 text-white font-tech font-bold tracking-widest uppercase hover:brightness-110 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
+                    >
+                        {/* Cart icon */}
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                        Agregar al carrito
+                        {cartCount > 0 && (
+                            <span className="ml-1 bg-white/20 text-white text-xs font-bold rounded-full px-2 py-0.5">{cartCount}</span>
+                        )}
                     </button>
                 </div>
             </div>
