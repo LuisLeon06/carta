@@ -1,117 +1,117 @@
 import React, { useState, useMemo } from 'react';
 
-// Top-priority languages first, then all world languages
+// countryCode = ISO 3166-1 alpha-2 del país donde más se habla ese idioma
 const ALL_LANGUAGES = [
     // ── Prioritarios ──
-    { code: 'pt', label: 'Português', flag: '🇧🇷', priority: true },
-    { code: 'fr', label: 'Français', flag: '🇫🇷', priority: true },
-    { code: 'it', label: 'Italiano', flag: '🇮🇹', priority: true },
-    { code: 'en', label: 'English', flag: '🇬🇧', priority: true },
-    { code: 'es', label: 'Español', flag: '🇦🇷', priority: true },
+    { code: 'pt', label: 'Português', countryCode: 'br', priority: true },
+    { code: 'fr', label: 'Français', countryCode: 'fr', priority: true },
+    { code: 'it', label: 'Italiano', countryCode: 'it', priority: true },
+    { code: 'en', label: 'English', countryCode: 'gb', priority: true },
+    { code: 'es', label: 'Español', countryCode: 'ar', priority: true },
     // ── Resto del mundo ──
-    { code: 'af', label: 'Afrikáans', flag: '🇿🇦' },
-    { code: 'sq', label: 'Albanés', flag: '🇦🇱' },
-    { code: 'am', label: 'Amárico', flag: '🇪🇹' },
-    { code: 'ar', label: 'Árabe', flag: '🇸🇦' },
-    { code: 'hy', label: 'Armenio', flag: '🇦🇲' },
-    { code: 'az', label: 'Azerbaiyano', flag: '🇦🇿' },
-    { code: 'eu', label: 'Vasco (Euskera)', flag: '🏴󠁥󠁳󠁰󠁶󠁿' },
-    { code: 'be', label: 'Bielorruso', flag: '🇧🇾' },
-    { code: 'bn', label: 'Bengalí', flag: '🇧🇩' },
-    { code: 'bs', label: 'Bosanski', flag: '🇧🇦' },
-    { code: 'bg', label: 'Búlgaro', flag: '🇧🇬' },
-    { code: 'ca', label: 'Catalán', flag: '🏴󠁥󠁳󠁣󠁴󠁿' },
-    { code: 'ceb', label: 'Cebuano', flag: '🇵🇭' },
-    { code: 'zh-CN', label: 'Chino Simplificado', flag: '🇨🇳' },
-    { code: 'zh-TW', label: 'Chino Tradicional', flag: '🇹🇼' },
-    { code: 'co', label: 'Corso', flag: '🇫🇷' },
-    { code: 'hr', label: 'Croata', flag: '🇭🇷' },
-    { code: 'cs', label: 'Checo', flag: '🇨🇿' },
-    { code: 'da', label: 'Danés', flag: '🇩🇰' },
-    { code: 'nl', label: 'Neerlandés', flag: '🇳🇱' },
-    { code: 'eo', label: 'Esperanto', flag: '🌍' },
-    { code: 'et', label: 'Estonio', flag: '🇪🇪' },
-    { code: 'fi', label: 'Finlandés', flag: '🇫🇮' },
-    { code: 'fy', label: 'Frisón', flag: '🇳🇱' },
-    { code: 'gl', label: 'Gallego', flag: '🇪🇸' },
-    { code: 'ka', label: 'Georgiano', flag: '🇬🇪' },
-    { code: 'de', label: 'Alemán', flag: '🇩🇪' },
-    { code: 'el', label: 'Griego', flag: '🇬🇷' },
-    { code: 'gu', label: 'Gujarati', flag: '🇮🇳' },
-    { code: 'ht', label: 'Haitiano', flag: '🇭🇹' },
-    { code: 'ha', label: 'Hausa', flag: '🇳🇬' },
-    { code: 'haw', label: 'Hawaiano', flag: '🇺🇸' },
-    { code: 'iw', label: 'Hebreo', flag: '🇮🇱' },
-    { code: 'hi', label: 'Hindi', flag: '🇮🇳' },
-    { code: 'hmn', label: 'Hmong', flag: '🌏' },
-    { code: 'hu', label: 'Húngaro', flag: '🇭🇺' },
-    { code: 'is', label: 'Islandés', flag: '🇮🇸' },
-    { code: 'ig', label: 'Igbo', flag: '🇳🇬' },
-    { code: 'id', label: 'Indonesio', flag: '🇮🇩' },
-    { code: 'ga', label: 'Irlandés', flag: '🇮🇪' },
-    { code: 'ja', label: 'Japonés', flag: '🇯🇵' },
-    { code: 'jw', label: 'Javanés', flag: '🇮🇩' },
-    { code: 'kn', label: 'Kannada', flag: '🇮🇳' },
-    { code: 'kk', label: 'Kazajo', flag: '🇰🇿' },
-    { code: 'km', label: 'Jemer', flag: '🇰🇭' },
-    { code: 'rw', label: 'Kinyarwanda', flag: '🇷🇼' },
-    { code: 'ko', label: 'Coreano', flag: '🇰🇷' },
-    { code: 'ku', label: 'Kurdo', flag: '🇮🇶' },
-    { code: 'ky', label: 'Kirguís', flag: '🇰🇬' },
-    { code: 'lo', label: 'Laosiano', flag: '🇱🇦' },
-    { code: 'lv', label: 'Letón', flag: '🇱🇻' },
-    { code: 'lt', label: 'Lituano', flag: '🇱🇹' },
-    { code: 'lb', label: 'Luxemburgués', flag: '🇱🇺' },
-    { code: 'mk', label: 'Macedonio', flag: '🇲🇰' },
-    { code: 'mg', label: 'Malagasy', flag: '🇲🇬' },
-    { code: 'ms', label: 'Malayo', flag: '🇲🇾' },
-    { code: 'ml', label: 'Malayalam', flag: '🇮🇳' },
-    { code: 'mt', label: 'Maltés', flag: '🇲🇹' },
-    { code: 'mi', label: 'Maorí', flag: '🇳🇿' },
-    { code: 'mr', label: 'Maratí', flag: '🇮🇳' },
-    { code: 'mn', label: 'Mongol', flag: '🇲🇳' },
-    { code: 'my', label: 'Birmano', flag: '🇲🇲' },
-    { code: 'ne', label: 'Nepalés', flag: '🇳🇵' },
-    { code: 'no', label: 'Noruego', flag: '🇳🇴' },
-    { code: 'ny', label: 'Chichewa', flag: '🇲🇼' },
-    { code: 'or', label: 'Oriya', flag: '🇮🇳' },
-    { code: 'ps', label: 'Pastún', flag: '🇦🇫' },
-    { code: 'fa', label: 'Persa', flag: '🇮🇷' },
-    { code: 'pl', label: 'Polaco', flag: '🇵🇱' },
-    { code: 'pa', label: 'Punjabi', flag: '🇮🇳' },
-    { code: 'ro', label: 'Rumano', flag: '🇷🇴' },
-    { code: 'ru', label: 'Ruso', flag: '🇷🇺' },
-    { code: 'sm', label: 'Samoano', flag: '🇼🇸' },
-    { code: 'gd', label: 'Gaélico Escocés', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
-    { code: 'sr', label: 'Serbio', flag: '🇷🇸' },
-    { code: 'st', label: 'Sesoto', flag: '🇱🇸' },
-    { code: 'sn', label: 'Shona', flag: '🇿🇼' },
-    { code: 'sd', label: 'Sindhi', flag: '🇵🇰' },
-    { code: 'si', label: 'Cingalés', flag: '🇱🇰' },
-    { code: 'sk', label: 'Eslovaco', flag: '🇸🇰' },
-    { code: 'sl', label: 'Esloveno', flag: '🇸🇮' },
-    { code: 'so', label: 'Somalí', flag: '🇸🇴' },
-    { code: 'su', label: 'Sundanés', flag: '🇮🇩' },
-    { code: 'sw', label: 'Suajili', flag: '🇰🇪' },
-    { code: 'sv', label: 'Sueco', flag: '🇸🇪' },
-    { code: 'tl', label: 'Filipino', flag: '🇵🇭' },
-    { code: 'tg', label: 'Tayiko', flag: '🇹🇯' },
-    { code: 'ta', label: 'Tamil', flag: '🇮🇳' },
-    { code: 'tt', label: 'Tártaro', flag: '🇷🇺' },
-    { code: 'te', label: 'Telugu', flag: '🇮🇳' },
-    { code: 'th', label: 'Tailandés', flag: '🇹🇭' },
-    { code: 'tr', label: 'Turco', flag: '🇹🇷' },
-    { code: 'tk', label: 'Turcomano', flag: '🇹🇲' },
-    { code: 'uk', label: 'Ucraniano', flag: '🇺🇦' },
-    { code: 'ur', label: 'Urdu', flag: '🇵🇰' },
-    { code: 'ug', label: 'Uigur', flag: '🇨🇳' },
-    { code: 'uz', label: "O'zbek", flag: '🇺🇿' },
-    { code: 'vi', label: 'Vietnamita', flag: '🇻🇳' },
-    { code: 'cy', label: 'Galés', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
-    { code: 'xh', label: 'isiXhosa', flag: '🇿🇦' },
-    { code: 'yi', label: 'Yídish', flag: '🌍' },
-    { code: 'yo', label: 'Yoruba', flag: '🇳🇬' },
-    { code: 'zu', label: 'Zulú', flag: '🇿🇦' },
+    { code: 'af', label: 'Afrikáans', countryCode: 'za' },
+    { code: 'sq', label: 'Albanés', countryCode: 'al' },
+    { code: 'am', label: 'Amárico', countryCode: 'et' },
+    { code: 'ar', label: 'Árabe', countryCode: 'sa' },
+    { code: 'hy', label: 'Armenio', countryCode: 'am' },
+    { code: 'az', label: 'Azerbaiyano', countryCode: 'az' },
+    { code: 'eu', label: 'Vasco (Euskera)', countryCode: 'es' },
+    { code: 'be', label: 'Bielorruso', countryCode: 'by' },
+    { code: 'bn', label: 'Bengalí', countryCode: 'bd' },
+    { code: 'bs', label: 'Bosanski', countryCode: 'ba' },
+    { code: 'bg', label: 'Búlgaro', countryCode: 'bg' },
+    { code: 'ca', label: 'Catalán', countryCode: 'es' },
+    { code: 'ceb', label: 'Cebuano', countryCode: 'ph' },
+    { code: 'zh-CN', label: 'Chino Simplificado', countryCode: 'cn' },
+    { code: 'zh-TW', label: 'Chino Tradicional', countryCode: 'tw' },
+    { code: 'co', label: 'Corso', countryCode: 'fr' },
+    { code: 'hr', label: 'Croata', countryCode: 'hr' },
+    { code: 'cs', label: 'Checo', countryCode: 'cz' },
+    { code: 'da', label: 'Danés', countryCode: 'dk' },
+    { code: 'nl', label: 'Neerlandés', countryCode: 'nl' },
+    { code: 'eo', label: 'Esperanto', countryCode: 'eu' },
+    { code: 'et', label: 'Estonio', countryCode: 'ee' },
+    { code: 'fi', label: 'Finlandés', countryCode: 'fi' },
+    { code: 'fy', label: 'Frisón', countryCode: 'nl' },
+    { code: 'gl', label: 'Gallego', countryCode: 'es' },
+    { code: 'ka', label: 'Georgiano', countryCode: 'ge' },
+    { code: 'de', label: 'Alemán', countryCode: 'de' },
+    { code: 'el', label: 'Griego', countryCode: 'gr' },
+    { code: 'gu', label: 'Gujarati', countryCode: 'in' },
+    { code: 'ht', label: 'Haitiano', countryCode: 'ht' },
+    { code: 'ha', label: 'Hausa', countryCode: 'ng' },
+    { code: 'haw', label: 'Hawaiano', countryCode: 'us' },
+    { code: 'iw', label: 'Hebreo', countryCode: 'il' },
+    { code: 'hi', label: 'Hindi', countryCode: 'in' },
+    { code: 'hmn', label: 'Hmong', countryCode: 'cn' },
+    { code: 'hu', label: 'Húngaro', countryCode: 'hu' },
+    { code: 'is', label: 'Islandés', countryCode: 'is' },
+    { code: 'ig', label: 'Igbo', countryCode: 'ng' },
+    { code: 'id', label: 'Indonesio', countryCode: 'id' },
+    { code: 'ga', label: 'Irlandés', countryCode: 'ie' },
+    { code: 'ja', label: 'Japonés', countryCode: 'jp' },
+    { code: 'jw', label: 'Javanés', countryCode: 'id' },
+    { code: 'kn', label: 'Kannada', countryCode: 'in' },
+    { code: 'kk', label: 'Kazajo', countryCode: 'kz' },
+    { code: 'km', label: 'Jemer', countryCode: 'kh' },
+    { code: 'rw', label: 'Kinyarwanda', countryCode: 'rw' },
+    { code: 'ko', label: 'Coreano', countryCode: 'kr' },
+    { code: 'ku', label: 'Kurdo', countryCode: 'iq' },
+    { code: 'ky', label: 'Kirguís', countryCode: 'kg' },
+    { code: 'lo', label: 'Laosiano', countryCode: 'la' },
+    { code: 'lv', label: 'Letón', countryCode: 'lv' },
+    { code: 'lt', label: 'Lituano', countryCode: 'lt' },
+    { code: 'lb', label: 'Luxemburgués', countryCode: 'lu' },
+    { code: 'mk', label: 'Macedonio', countryCode: 'mk' },
+    { code: 'mg', label: 'Malagasy', countryCode: 'mg' },
+    { code: 'ms', label: 'Malayo', countryCode: 'my' },
+    { code: 'ml', label: 'Malayalam', countryCode: 'in' },
+    { code: 'mt', label: 'Maltés', countryCode: 'mt' },
+    { code: 'mi', label: 'Maorí', countryCode: 'nz' },
+    { code: 'mr', label: 'Maratí', countryCode: 'in' },
+    { code: 'mn', label: 'Mongol', countryCode: 'mn' },
+    { code: 'my', label: 'Birmano', countryCode: 'mm' },
+    { code: 'ne', label: 'Nepalés', countryCode: 'np' },
+    { code: 'no', label: 'Noruego', countryCode: 'no' },
+    { code: 'ny', label: 'Chichewa', countryCode: 'mw' },
+    { code: 'or', label: 'Oriya', countryCode: 'in' },
+    { code: 'ps', label: 'Pastún', countryCode: 'af' },
+    { code: 'fa', label: 'Persa', countryCode: 'ir' },
+    { code: 'pl', label: 'Polaco', countryCode: 'pl' },
+    { code: 'pa', label: 'Punjabi', countryCode: 'in' },
+    { code: 'ro', label: 'Rumano', countryCode: 'ro' },
+    { code: 'ru', label: 'Ruso', countryCode: 'ru' },
+    { code: 'sm', label: 'Samoano', countryCode: 'ws' },
+    { code: 'gd', label: 'Gaélico Escocés', countryCode: 'gb' },
+    { code: 'sr', label: 'Serbio', countryCode: 'rs' },
+    { code: 'st', label: 'Sesoto', countryCode: 'ls' },
+    { code: 'sn', label: 'Shona', countryCode: 'zw' },
+    { code: 'sd', label: 'Sindhi', countryCode: 'pk' },
+    { code: 'si', label: 'Cingalés', countryCode: 'lk' },
+    { code: 'sk', label: 'Eslovaco', countryCode: 'sk' },
+    { code: 'sl', label: 'Esloveno', countryCode: 'si' },
+    { code: 'so', label: 'Somalí', countryCode: 'so' },
+    { code: 'su', label: 'Sundanés', countryCode: 'id' },
+    { code: 'sw', label: 'Suajili', countryCode: 'ke' },
+    { code: 'sv', label: 'Sueco', countryCode: 'se' },
+    { code: 'tl', label: 'Filipino', countryCode: 'ph' },
+    { code: 'tg', label: 'Tayiko', countryCode: 'tj' },
+    { code: 'ta', label: 'Tamil', countryCode: 'in' },
+    { code: 'tt', label: 'Tártaro', countryCode: 'ru' },
+    { code: 'te', label: 'Telugu', countryCode: 'in' },
+    { code: 'th', label: 'Tailandés', countryCode: 'th' },
+    { code: 'tr', label: 'Turco', countryCode: 'tr' },
+    { code: 'tk', label: 'Turcomano', countryCode: 'tm' },
+    { code: 'uk', label: 'Ucraniano', countryCode: 'ua' },
+    { code: 'ur', label: 'Urdu', countryCode: 'pk' },
+    { code: 'ug', label: 'Uigur', countryCode: 'cn' },
+    { code: 'uz', label: "O'zbek", countryCode: 'uz' },
+    { code: 'vi', label: 'Vietnamita', countryCode: 'vn' },
+    { code: 'cy', label: 'Galés', countryCode: 'gb' },
+    { code: 'xh', label: 'isiXhosa', countryCode: 'za' },
+    { code: 'yi', label: 'Yídish', countryCode: 'il' },
+    { code: 'yo', label: 'Yoruba', countryCode: 'ng' },
+    { code: 'zu', label: 'Zulú', countryCode: 'za' },
 ];
 
 const changeLanguage = (langCode) => {
@@ -130,7 +130,7 @@ const changeLanguage = (langCode) => {
     window.location.reload();
 };
 
-const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
+const CategoryList = ({ categories, onSelectCategory, cartCount = 0, onOpenCart, onOpenAdmin }) => {
     const [showLangPanel, setShowLangPanel] = useState(false);
     const [activeLang, setActiveLang] = useState('es');
     const [search, setSearch] = useState('');
@@ -148,6 +148,21 @@ const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
         changeLanguage(code);
         setShowLangPanel(false);
         setSearch('');
+    };
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+
+    const handlePasswordSubmit = () => {
+        if (passwordInput === 'losle2024') {
+            setShowPasswordModal(false);
+            setPasswordInput('');
+            setPasswordError(false);
+            onOpenAdmin && onOpenAdmin();
+        } else {
+            setPasswordError(true);
+            setPasswordInput('');
+        }
     };
 
     return (
@@ -177,7 +192,8 @@ const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
                     <div className="relative">
                         <div
                             className="w-10 h-10 rounded-full glass-panel box-neon-cyan flex items-center justify-center cursor-pointer hover:shadow-[0_0_20px_rgba(255,77,0,0.6)] transition-shadow"
-                            title="Carrito"
+                            title="Ver carrito"
+                            onClick={() => onOpenCart && onOpenCart()}
                         >
                             {/* Cart icon */}
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -188,7 +204,7 @@ const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
                         </div>
                         {/* Badge */}
                         {cartCount > 0 && (
-                            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-[var(--color-primary-fire)] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow-[0_0_8px_rgba(255,77,0,0.8)] border border-orange-300/30">
+                            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-orange-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow-[0_0_8px_rgba(234,88,12,0.8)] border border-orange-300/30">
                                 {cartCount}
                             </span>
                         )}
@@ -197,7 +213,42 @@ const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
                 </div>
             </header>
 
-            {/* Language Panel */}
+            {/* ── Modal contraseña personal ── */}
+            {showPasswordModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm px-6">
+                    <div className="w-full max-w-xs bg-[#100e0b] border border-orange-900/40 rounded-2xl p-6 flex flex-col gap-4 shadow-2xl">
+                        <div className="text-center">
+                            <div className="text-2xl mb-1">🔐</div>
+                            <h3 className="font-tech text-white font-bold uppercase tracking-widest text-sm">Acceso Personal</h3>
+                            <p className="text-[10px] text-gray-600 mt-1">Ingresá la contraseña de staff</p>
+                        </div>
+                        <input
+                            type="password"
+                            value={passwordInput}
+                            onChange={e => { setPasswordInput(e.target.value); setPasswordError(false); }}
+                            onKeyDown={e => e.key === 'Enter' && handlePasswordSubmit()}
+                            placeholder="••••••••"
+                            autoFocus
+                            className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors text-center tracking-widest
+                                ${passwordError ? 'border-red-500/60 placeholder-red-500/40' : 'border-white/10 placeholder-gray-700 focus:border-orange-500/50'}`}
+                        />
+                        {passwordError && (
+                            <p className="text-red-400 text-xs text-center -mt-2">Contraseña incorrecta</p>
+                        )}
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setShowPasswordModal(false)}
+                                className="flex-1 py-2.5 rounded-xl border border-white/10 text-gray-500 text-xs font-bold uppercase tracking-wide hover:bg-white/5 transition-colors"
+                            >Cancelar</button>
+                            <button
+                                onClick={handlePasswordSubmit}
+                                className="flex-1 py-2.5 rounded-xl bg-orange-700 text-white text-xs font-bold uppercase tracking-wide hover:bg-orange-600 transition-colors"
+                            >Entrar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {showLangPanel && (
                 <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={() => setShowLangPanel(false)}>
                     <div
@@ -242,7 +293,14 @@ const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
                                         ${lang.priority ? 'border-[var(--color-primary-fire)]/40' : ''}
                                     `}
                                 >
-                                    <span className="text-xl w-7 shrink-0">{lang.flag}</span>
+                                    <img
+                                        src={`https://flagcdn.com/24x18/${lang.countryCode}.png`}
+                                        alt={lang.label}
+                                        width="24"
+                                        height="18"
+                                        className="rounded-sm shrink-0 shadow-sm"
+                                        style={{ minWidth: '24px' }}
+                                    />
                                     <span className="truncate">{lang.label}</span>
                                     {activeLang === lang.code && (
                                         <span className="ml-auto text-[var(--color-primary-fire)]">✓</span>
@@ -287,6 +345,19 @@ const CategoryList = ({ categories, onSelectCategory, cartCount = 0 }) => {
                     </div>
                 ))}
             </div>
+            {/* ── Footer discreto ── */}
+            <footer className="mt-16 flex flex-col items-center gap-1 pb-6">
+                <p className="text-[9px] text-gray-700 tracking-widest uppercase text-center">
+                    <a href="https://nortechly.com" target="_blank" rel="noreferrer" className="hover:text-gray-500 transition-colors">nortechly.com</a>
+                    {' · '}
+                    <span className="cursor-pointer hover:text-gray-500 transition-colors">Términos y condiciones</span>
+                    {' · '}
+                    <span
+                        className="cursor-pointer hover:text-gray-500 transition-colors"
+                        onClick={() => { setShowPasswordModal(true); setPasswordError(false); setPasswordInput(''); }}
+                    >Personal</span>
+                </p>
+            </footer>
         </div>
     );
 };

@@ -3,8 +3,10 @@ import SplashScreen from './screens/SplashScreen'
 import CategoryList from './screens/CategoryList'
 import MenuList from './screens/MenuList'
 import ProductDetail from './screens/ProductDetail'
+import AdminPanel from './screens/AdminPanel'
 import { fetchMenu } from './api/menuData'
 import EmberParticles from './components/EmberParticles'
+import CartDrawer from './components/CartDrawer'
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('splash');
@@ -14,8 +16,10 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // ── Cart state ─────────────────────────────────────
+  // ── Cart state ──────────────────────────────────────────────
   const [cart, setCart] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
 
   const handleAddToCart = (product) => {
@@ -27,7 +31,19 @@ function App() {
       return [...prev, { ...product, qty: 1 }];
     });
   };
-  // ───────────────────────────────────────────────────
+
+  const handleRemoveFromCart = (productId) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === productId);
+      if (existing && existing.qty > 1) {
+        return prev.map(i => i.id === productId ? { ...i, qty: i.qty - 1 } : i);
+      }
+      return prev.filter(i => i.id !== productId);
+    });
+  };
+
+  const handleClearCart = () => setCart([]);
+  // ────────────────────────────────────────────────────────────
 
   useEffect(() => {
     const loadData = async () => {
@@ -60,6 +76,8 @@ function App() {
           categories={categories}
           onSelectCategory={handleSelectCategory}
           cartCount={cartCount}
+          onOpenCart={() => setShowCart(true)}
+          onOpenAdmin={() => setCurrentScreen('admin')}
         />
       )}
 
@@ -69,7 +87,9 @@ function App() {
           items={menuItems}
           onSelectProduct={handleSelectProduct}
           onBack={handleBackToCategories}
+          onAddToCart={handleAddToCart}
           cartCount={cartCount}
+          onOpenCart={() => setShowCart(true)}
         />
       )}
 
@@ -79,6 +99,21 @@ function App() {
           onBack={handleBackToList}
           onAddToCart={handleAddToCart}
           cartCount={cartCount}
+          onOpenCart={() => setShowCart(true)}
+        />
+      )}
+
+      {currentScreen === 'admin' && (
+        <AdminPanel onBack={() => setCurrentScreen('categories')} />
+      )}
+
+      {/* Cart Drawer — global overlay */}
+      {showCart && (
+        <CartDrawer
+          cart={cart}
+          onClose={() => setShowCart(false)}
+          onRemove={handleRemoveFromCart}
+          onClear={handleClearCart}
         />
       )}
     </div>
